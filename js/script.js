@@ -1,5 +1,5 @@
-const apiKey="37909e5f44af01738c5a2c769c1fe735"
-const apiUrl="https://api.openweathermap.org/data/2.5/weather?q=";
+// The actual API key is now securely stored in Vercel Environment Variables
+// and accessed via the /api/weather Serverless Function.
 
 // DOM Elements
 const searchBox = document.querySelector(".search-input");
@@ -30,8 +30,8 @@ function formatTemp(celsiusValue) {
 // Function to handle fetching weather data
 async function checkWeather(city){
     try {
-        // Fetch using metric by default to store base Celsius data
-        const response = await fetch(apiUrl + city +`&units=metric&appid=${apiKey}`);
+        // Fetch using our internal Serverless Function to keep API Keys hidden
+        const response = await fetch(`/api/weather?city=${city}&units=metric`);
         
         if (!response.ok) {
             alert("City not found");
