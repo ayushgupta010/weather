@@ -1,13 +1,17 @@
 export default async function handler(req, res) {
-  const { city, units } = req.query;
+  // Use a fallback to parse URL if req.query is empty (common in local Vercel dev)
+  const urlParams = new URLSearchParams(req.url.split('?')[1]);
+  const city = req.query.city || urlParams.get('city');
+  const units = req.query.units || urlParams.get('units') || 'metric';
+  
   const apiKey = process.env.WEATHER_API_KEY;
 
   if (!city) {
-    return res.status(400).json({ error: 'City is required' });
+    return res.status(400).json({ error: 'City is required', url: req.url });
   }
 
   try {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units || 'metric'}&appid=${apiKey}`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`;
     const response = await fetch(url);
     const data = await response.json();
 
